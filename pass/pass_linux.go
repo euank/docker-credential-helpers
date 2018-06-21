@@ -92,7 +92,8 @@ func runPass(stdinContent string, args ...string) (string, error) {
 		return "", fmt.Errorf("%s: %s", cmdErr, errContent)
 	}
 
-	return string(result), nil
+	// trim newlines; pass v1.7.1+ includes a newline at the end of `show` output
+	return strings.TrimRight(string(result), "\n\r"), nil
 }
 
 // Pass handles secrets using Linux secret-service as a store.
@@ -180,7 +181,7 @@ func (h Pass) Get(serverURL string) (string, string, error) {
 
 	if _, err := os.Stat(path.Join(getPassDir(), PASS_FOLDER, encoded)); err != nil {
 		if os.IsNotExist(err) {
-			return "", "", nil;
+			return "", "", nil
 		}
 
 		return "", "", err
